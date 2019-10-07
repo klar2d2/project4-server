@@ -1,15 +1,14 @@
 const express = require('express');
-const socket = require('socket.io')
 const router = express();
+const client = require('socket.io').listen(4000).sockets;
 
 //SOCKET SETUP
-let io = socket(router);
 
-io.on('connection', (socket)=> {
+client.on('connection', (socket)=> {
     console.log('made a socket connection', socket.id)
 
     socket.on('chat', (data)=> {
-        io.sockets.emit('chat', data);
+        client.sockets.emit('chat', data);
     })
 })
 
