@@ -22,6 +22,10 @@ app.use('/auth',
     ]
 }), require('./controllers/auth'))
 
+app.use('/message',  expressJwt({
+  secret: process.env.JWT_SECRET
+}),require('./controllers/message'));
+
 app.get('*', (req,res) => {
   res.status(404).send({
     message: 'Not Found'
