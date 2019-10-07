@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ limit: '10mb' }))
 
-app.use('/auth', 
+app.use('/auth',
   expressJwt({
     secret: process.env.JWT_SECRET
   })
@@ -21,6 +21,8 @@ app.use('/auth',
       { url: '/auth/signup', methods: ['POST'] }
     ]
 }), require('./controllers/auth'))
+
+app.use('/reviews', require('./controllers/reviews'))
 
 app.get('*', (req,res) => {
   res.status(404).send({
