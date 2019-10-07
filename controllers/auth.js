@@ -1,7 +1,7 @@
 require('dotenv').config();
 let jwt = require('jsonwebtoken');
 let router = require('express').Router();
-let db = require('../mdoels');
+let db = require('../models');
 
 router.post('/login', (req,res) => {
   db.User.findOne({ email: req.body.email })
@@ -13,7 +13,7 @@ router.post('/login', (req,res) => {
       return res.status(406).send({ message: 'Not Acceptable: Invalid Credentials!'})  
     }
     let token = jwt.sign(user.toJSON(), process.env.JWT_SECRET,{
-      exprise: 60 * 60 * 8
+      expiresIn: 60 * 60 * 8
     })
     res.send({ token })
   })
@@ -35,7 +35,7 @@ router.post('/signup', (req,res) => {
     }
     db.User.create(req.body)
     .then((newUser) => {
-      let token = jwt.sign(newUser.toJSON(), proecess.env.JWT_SECRET,{
+      let token = jwt.sign(newUser.toJSON(), process.env.JWT_SECRET,{
         expiresIn: 60 * 60 * 8
       })
       res.send({ token })
