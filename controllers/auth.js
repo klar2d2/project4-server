@@ -1,7 +1,7 @@
 require('dotenv').config();
 let jwt = require('jsonwebtoken');
 let router = require('express').Router();
-let db = require('../mdoels');
+let db = require('../models');
 
 router.post('/login', (req,res) => {
   db.User.findOne({ email: req.body.email })

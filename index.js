@@ -3,9 +3,26 @@ const express = require('express')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 const rowdyLogger = require('rowdy-logger')
+const http = require('http')
+const socketIO = require('socket.io')
 
 const app = express()
-const rowdyResults = rowdyLogger.begin(app)
+const rowdyResults = rowdyLogger.begin(app);
+const server = http.createServer(app);
+const io = socketIO(server);
+
+io.on('connection', socket => {
+  console.log('New client connected');
+
+  socket.on('change color', (color) => {
+    console.log('Color Changed to: ', color);
+    io.sockets.emit('change color', color)
+  })
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  })
+})
 
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
@@ -22,9 +39,7 @@ app.use('/auth',
     ]
 }), require('./controllers/auth'))
 
-app.use('/message',  expressJwt({
-  secret: process.env.JWT_SECRET
-}),require('./controllers/message'));
+app.use('/message', require('./controllers/message'));
 
 app.get('*', (req,res) => {
   res.status(404).send({
@@ -32,6 +47,13 @@ app.get('*', (req,res) => {
   })
 })
 
-app.listen(process.env.PORT, ()=>{
+io.on('connection', socket => {
+  console.log('user connected')
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
+})
+server.listen(process.env.PORT, ()=>{
   rowdyResults.print()
 })
