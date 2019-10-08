@@ -17,7 +17,7 @@ io.on('connection', socket => {
   
   socket.on('add message', (message, userId, goatId) => {
     console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
-    io.sockets.emit('add message', 'we all gonna diaiaiaiiiee!')
+    io.sockets.emit('add message', message)
     db.Message.create({
       message: message
     })
@@ -27,6 +27,11 @@ io.on('connection', socket => {
     .catch(err => {
       console.log(err)
     })
+  })
+
+  socket.on('is typing', (userId) => {
+    console.log(userId)
+    socket.broadcast.emit('is typing', userId)
   })
 
   socket.on('disconnect', () => {
