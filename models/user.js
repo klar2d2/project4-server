@@ -25,7 +25,23 @@ let userSchema = new mongoose.Schema({
     minlength: 8,
     maxlength: 32
   },
-  profileId: String
+  profileId: {
+    type: Shcema.Types.ObjectId,
+    ref: 'Goat'
+  },
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+  appointments: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Appointment'
+  }],
+  address: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Address'
+  }
+
 })
 
 userSchema.pre('save', function(next){
