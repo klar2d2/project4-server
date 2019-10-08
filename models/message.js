@@ -4,19 +4,17 @@ const Object_Id = mongoose.Schema.Types.ObjectId;
 let messageSchema = new mongoose.Schema({
     user: {
         type: Object_Id,
-        ref: 'User'
+        ref: 'User',
     }, 
     message: {
-        required: true,
         type: String,
     },
     date: {
-        required: true,
-        type: String
+        type: String,
     },
     goat: {
         type: Object_Id, 
-        ref: 'Goat'
+        ref: 'Goat',
     }
 })
 

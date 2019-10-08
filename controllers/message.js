@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express();
-const client = require('socket.io').listen(4000).sockets;
 const db = require('../models')
 
 router.get('/', (req, res) => {
-    res.send('hello there big face');
+    db.Message.find()
+    .then(() => {
+        res.send('Hello there big face')
+    })
+    .catch(err => {
+        console.log(err)
+    })
 })
 
 module.exports = router;

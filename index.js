@@ -15,9 +15,18 @@ const db = require('./models')
 io.on('connection', socket => {
   console.log('New client connected');
   
-  socket.on('add message', (message) => {
-    console.log('The Message added is: ', message);
+  socket.on('add message', (message, userId, goatId) => {
+    console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
     io.sockets.emit('add message', 'we all gonna diaiaiaiiiee!')
+    db.Message.create({
+      message: message
+    })
+    .then(() => {
+      console.log('message created in db')
+    })
+    .catch(err => {
+      console.log(err)
+    })
   })
 
   socket.on('disconnect', () => {
