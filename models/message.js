@@ -14,9 +14,9 @@ let messageSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    reciever: {
+    goat: {
         type: Object_Id, 
-        ref: 'Reciever'
+        ref: 'Goat'
     }
 })
 

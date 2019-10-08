@@ -8,4 +8,4 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 module.exports.User = require('./user')
 module.exports.Message = require('./message')
-module.exports.Reciever = require('./reciever')
+module.exports.Goat = require('./goat')

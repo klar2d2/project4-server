@@ -10,10 +10,11 @@ const app = express()
 const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
+const db = require('./models')
 
 io.on('connection', socket => {
   console.log('New client connected');
-
+  
   socket.on('add message', (message) => {
     console.log('The Message added is: ', message);
     io.sockets.emit('add message', 'we all gonna diaiaiaiiiee!')
