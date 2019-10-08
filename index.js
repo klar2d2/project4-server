@@ -14,9 +14,9 @@ const io = socketIO(server);
 io.on('connection', socket => {
   console.log('New client connected');
 
-  socket.on('change color', (color) => {
-    console.log('Color Changed to: ', color);
-    io.sockets.emit('change color', color)
+  socket.on('add message', (message) => {
+    console.log('The Message added is: ', message);
+    io.sockets.emit('add message', 'we all gonna diaiaiaiiiee!')
   })
 
   socket.on('disconnect', () => {
@@ -47,13 +47,6 @@ app.get('*', (req,res) => {
   })
 })
 
-io.on('connection', socket => {
-  console.log('user connected')
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
-})
 server.listen(process.env.PORT, ()=>{
   rowdyResults.print()
 })
