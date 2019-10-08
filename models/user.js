@@ -1,5 +1,6 @@
 let mongoose = require('mongoose')
 let bcrypt = require('bcryptjs')
+let addressSchema = require('./address')
 
 let userSchema = new mongoose.Schema({
   firstname: {
@@ -24,6 +25,7 @@ let userSchema = new mongoose.Schema({
     minlength: 8,
     maxlength: 32
   },
+  address: addressSchema,
   profileUrl: String
 })
 
