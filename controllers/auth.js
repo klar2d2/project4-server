@@ -2,6 +2,13 @@ require('dotenv').config();
 let jwt = require('jsonwebtoken');
 let router = require('express').Router();
 let db = require('../models');
+//Get all Users PLEASE DELETE EVENTUALLY YOU SILLY GOAT
+router.get('/all', (req, res) => {
+  db.User.find()
+  .then(user => {
+    res.send({user})
+  })
+})
 
 router.post('/login', (req,res) => {
   db.User.findOne({ email: req.body.email })
@@ -35,7 +42,7 @@ router.post('/signup', (req,res) => {
     }
     db.User.create(req.body)
     .then((newUser) => {
-      let token = jwt.sign(newUser.toJSON(), proecess.env.JWT_SECRET,{
+      let token = jwt.sign(newUser.toJSON(), process.env.JWT_SECRET,{
         expiresIn: 60 * 60 * 8
       })
       res.send({ token })
