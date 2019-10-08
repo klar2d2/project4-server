@@ -19,6 +19,7 @@ let userSchema = new mongoose.Schema({
     }
   },
   isGoat: Boolean,
+  phone: String,
   password: {
     type: String,
     required: true,
