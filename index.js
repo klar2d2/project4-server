@@ -11,13 +11,14 @@ const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
+const nsp = io.of('/43253')
 
-io.on('connection', socket => {
+nsp.on('connection', socket => {
   console.log('New client connected');
   
   socket.on('add message', (message, userId, goatId) => {
     console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
-    io.sockets.emit('add message', message)
+    nsp.emit('add message', message)
     db.Message.create({
       message: message
     })
