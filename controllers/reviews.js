@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/:id', (req, res) => {
-  db.User.findOne({_id: req.params.userId})
+router.get('/:goatId', (req, res) => {
+  db.User.findOne({_id: req.params.goatId})
   .then(user => {
     if(user) {
       res.status(201).send({reviews: user.reviews})
@@ -30,10 +30,10 @@ router.get('/:id', (req, res) => {
   })
 })
 
-router.post('/:id', (req, res) => {
+router.post('/:goatId', (req, res) => {
   db.Review.create({
-    goatId: req.body.goatId,
-    //Change to req.user after testing is over
+    goatId: req.params.goatId,
+    //Change to req.user.id after testing is over
     clientId: req.body.clientId,
     title: req.body.title,
     content: req.body.content,
@@ -48,7 +48,7 @@ router.post('/:id', (req, res) => {
   })
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:reviewId', (req, res) => {
   db.Reveiw.findOneAndUpdate({
     _id: req.params.reviewId
   })
@@ -69,10 +69,10 @@ router.put('/:id', (req, res) => {
   })
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:reviewId', (req, res) => {
   db.User.findOne({_id : req.params.reviewId})
   .then(review => {
-    if (reveiw.clientId === req.user.id) {
+    if (review.clientId === req.user.id) {
       db.Review.deleteOne({
         _id: req.params.reviewId
       })

@@ -12,7 +12,7 @@ const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
-const nsp = io.of('/43253')
+const nsp = io.of('/12345')
 
 nsp.on('connection', socket => {
   console.log('New client connected');
