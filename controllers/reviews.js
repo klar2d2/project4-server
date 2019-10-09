@@ -53,6 +53,8 @@ router.put('/:reviewId', (req, res) => {
     _id: req.params.reviewId
   })
   .then(review => {
+    console.log(review.clientId)
+    console.log(req.user.id)
     if (review.clientId === req.user.id) {
       review.title = req.body.title;
       review.content = req.body.content;
