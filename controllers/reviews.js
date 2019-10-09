@@ -53,7 +53,7 @@ router.put('/:id', (req, res) => {
     _id: req.params.reviewId
   })
   .then(review => {
-    if (review.clientId === req.user.id) {
+    if (review.clientId === req.user._id) {
       review.title = req.body.title;
       review.content = req.body.content;
       review.rating = req.body.content;

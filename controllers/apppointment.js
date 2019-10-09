@@ -1,10 +1,26 @@
 let router = require('express').Router();
 let db = require('../models')
+var nodemailer = require('nodemailer');
+
+
+//Setting up the sender for nodemail
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'munchmylawn@gmail.com',
+    pass: 'N5ky9e8v'
+  }
+});
+//Twilio
+const accountSid = process.env.ACCOUNT_SID;
+const authToken = process.env.TWILIO_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+
 
 // POST appointment
 router.post('/create', (req,res) => {
   db.Appointment.findOne({
-    goatId: req.body.goatId, 
+    goatId: req.body.goatId,
     startDate: req.body.startDate,
     endDate: req.body.endDate
   })
@@ -16,7 +32,31 @@ router.post('/create', (req,res) => {
     }
     db.Appointment.create(req.body)
     .then((newAppointment) => {
-      res.send({ 
+      //Send an email about the appointment
+      var mailOptions = {
+        from: 'munchmylawn@gmail.com',
+        to: req.user.email,
+        subject: 'Appointment Set',
+        text: `You have set an appointment for ${req.body.startDate}`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+      client.messages
+        .create({
+           body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+           from: '+12054489339',
+           to: req.user.phone
+         })
+        .then(message => console.log(message.sid));
+
+      res.send({
         message: 'Appointment successfully created',
         appointmentId: newAppointment._id
       })
@@ -72,7 +112,7 @@ router.delete('/:appointmentId', (req,res) => {
   })
   .then((appointment)=>{
     if (!req.user.id === appointment.clientId || !req.user.id === appointment.goatId){
-      return res.status(403).send({ message: 'You do not have permission for this action.' })    
+      return res.status(403).send({ message: 'You do not have permission for this action.' })
     }
     db.Appointment.deleteOne({
       _id: req.params.appointmentId
@@ -98,7 +138,7 @@ router.put('/:appointmentId', (req, res) => {
   })
   .then((appointment) => {
     if (!req.user.id === appointment.clientId || !req.user.id === appointment.goatId){
-      return res.status(403).send({ message: 'You do not have permission for this action.' })      
+      return res.status(403).send({ message: 'You do not have permission for this action.' })
     }
     if (req.body.startDate) {
       appointment.startDate = req.body.startDate
@@ -111,7 +151,7 @@ router.put('/:appointmentId', (req, res) => {
     }
     appointment.save()
     .then((appointment)=>{
-      res.send({ 
+      res.send({
         message: 'Updated apppointment successfully',
         appointment
       })
@@ -121,6 +161,6 @@ router.put('/:appointmentId', (req, res) => {
     console.log(`Error in PUT/appointment/${req.params.appointmentId}`, err)
     res.status(503).send({ message: 'Something went wrong.' })
   })
-}) 
+})
 
 module.exports = router;
