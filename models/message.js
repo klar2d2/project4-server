@@ -8,6 +8,10 @@ let messageSchema = new mongoose.Schema({
     }, 
     message: {
         type: String,
+    },
+    goatId: {
+        type: Object_Id,
+        ref: 'Goat'
     }
 })
 
