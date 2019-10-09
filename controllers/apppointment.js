@@ -1,3 +1,4 @@
+require('dotenv').config()
 let router = require('express').Router();
 let db = require('../models')
 var nodemailer = require('nodemailer');
@@ -8,7 +9,7 @@ var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'munchmylawn@gmail.com',
-    pass: 'N5ky9e8v'
+    pass: process.env.EMAIL_PS
   }
 });
 //Twilio
