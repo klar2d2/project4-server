@@ -26,16 +26,22 @@ let userSchema = new mongoose.Schema({
     minlength: 8,
     maxlength: 32
   },
-  reviews: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Review'
+  profileId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Goat'
   },
-  address: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Address',
-     },
-
-  profileUrl: String
+  reviews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+  appointments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Appointment'
+  }],
+  address: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Address'
+  }
 
 })
 
