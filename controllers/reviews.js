@@ -45,22 +45,24 @@ router.post('/:goatId', (req, res) => {
     })
     .then((client)=>{
       client.reviews.push(review)
+      client.save()
+      db.User.findOne({
+        _id: review.goatId
+      })
+      .then((goat)=>{
+        goat.reviews.push(review)
+        goat.save()
+        res.status(201).send({success: review})
+      })
+      .catch((err)=>{
+        console.log('Error in post route', err)
+        res.status(500).send({message: "Failed posting the review"})
+      })
     })
     .catch((err)=>{
       console.log('Error in post route', err)
       res.status(500).send({message: "Failed posting the review"})
     })
-    db.User.findOne({
-      _id: review.goatId
-    })
-    .then((client)=>{
-      client.reviews.push(review)
-    })
-    .catch((err)=>{
-      console.log('Error in post route', err)
-      res.status(500).send({message: "Failed posting the review"})
-    })
-    res.status(201).send({success: review})
   })
   .catch(err => {
     console.log("error in the post route", err)
@@ -73,8 +75,6 @@ router.put('/:reviewId', (req, res) => {
     _id: req.params.reviewId
   })
   .then(review => {
-    console.log(typeof review.clientId)
-    console.log(typeof req.user._id)
     if (String(review.clientId) === req.user._id) {
       review.title = req.body.title;
       review.content = req.body.content;
