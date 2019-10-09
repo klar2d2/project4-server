@@ -24,14 +24,13 @@ app.post('/chat', (req,res) => {
   goatId = req.body.goatId;
   userId = req.body.userId
   res.send('hey there big face')
-
-
-const nsp = io.of(`/${goatId}-${userId}`)
-  nsp.on('connection', socket => {
+const nspObj = {}
+nspObj[`${goatId}-${userId}`] = io.of(`/${goatId}-${userId}`)
+nspObj[`${goatId}-${userId}`].on('connection', socket => {
     console.log('New client connected');
     socket.on('add message', (message, userId, goatId) => {
         console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
-        nsp.emit('add message', message)
+        nspObj[`${goatId}-${userId}`].emit('add message', message)
         db.Message.create({
           message, 
           userId, 
