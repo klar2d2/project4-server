@@ -2,6 +2,7 @@ require('dotenv').config();
 let jwt = require('jsonwebtoken');
 let router = require('express').Router();
 let db = require('../models');
+
 //Get all Users PLEASE DELETE EVENTUALLY YOU SILLY GOAT
 router.get('/all', (req, res) => {
   db.User.find()
