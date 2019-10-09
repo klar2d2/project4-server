@@ -49,14 +49,14 @@ router.post('/:goatId', (req, res) => {
 })
 
 router.put('/:reviewId', (req, res) => {
-  db.Reveiw.findOneAndUpdate({
+  db.Review.findOneAndUpdate({
     _id: req.params.reviewId
   })
   .then(review => {
     if (review.clientId === req.user._id) {
       review.title = req.body.title;
       review.content = req.body.content;
-      review.rating = req.body.content;
+      review.rating = req.body.rating;
       res.send({message: "Review Updated"})
     }
     else {
