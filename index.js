@@ -40,7 +40,7 @@ app.use('/appointment',
   expressJwt({
     secret: process.env.JWT_SECRET
   }), require('./controllers/apppointment'))
-
+app.use('/user', require('./controllers/user'))
 app.get('*', (req,res) => {
   res.status(404).send({
     message: 'Not Found'

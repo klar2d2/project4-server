@@ -22,4 +22,6 @@ const goatSeed = (goatNames) => {
   })
 }
 
+
+names = ['Nitch&Eacute','Jean-Peaul','Beau','Napoleon','Camus','Descartes','Galileo','Fukboi','Kepler','Goose','Pig','Giraffe','Cock-of-the-Rock','Deborah','Pigeon','Husky','Giant Baba','Festus Shears','Dumpy','Yeti','Jimmy Wang Yang','Rooster','Dumpster','Mr. Pogo','Puke','Tugboat','Virgil the Kentucky Butcher','Spanky Gazpacho','Brutus Beefcake','Chupacabra','Mr. Tickles',]
 console.log(getRandomCoord(-122,-123),getRandomCoord(47,48))
