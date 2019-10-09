@@ -106,6 +106,13 @@ router.get('/:appointmentId' ,(req,res) => {
   })
 })
 
+router.get('/all',(req,res) => {
+  db.Appointment.find()
+  .then((appointment) => {
+    return res.send({appointments})
+  })
+})
+
 // DELETE appointment
 router.delete('/:appointmentId', (req,res) => {
   db.Appointment.findOne({
