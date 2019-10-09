@@ -40,6 +40,26 @@ router.post('/:goatId', (req, res) => {
     rating: req.body.rating
   })
   .then(review => {
+    db.User.findOne({
+      _id: review.clientId
+    })
+    .then((client)=>{
+      client.reviews.push(review)
+    })
+    .catch((err)=>{
+      console.log('Error in post route', err)
+      res.status(500).send({message: "Failed posting the review"})
+    })
+    db.User.findOne({
+      _id: review.goatId
+    })
+    .then((client)=>{
+      client.reviews.push(review)
+    })
+    .catch((err)=>{
+      console.log('Error in post route', err)
+      res.status(500).send({message: "Failed posting the review"})
+    })
     res.status(201).send({success: review})
   })
   .catch(err => {
