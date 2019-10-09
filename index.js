@@ -4,45 +4,53 @@ const express = require('express')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 const rowdyLogger = require('rowdy-logger')
-const http = require('http')
 const socketIO = require('socket.io')
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-
 const app = express()
 const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
-const nsp = io.of('/43253')
+const goatId = null;
+const userId = null;
 
-nsp.on('connection', socket => {
-  console.log('New client connected');
-  
-  socket.on('add message', (message, userId, goatId) => {
-    console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
-    nsp.emit('add message', message)
-    db.Message.create({
-      message, 
-      userId, 
-      goatId
-    })
-    .then(() => {
-      console.log('message created in db')
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  })
-
-  socket.on('is typing', (userId) => {
-    console.log(userId)
-    socket.broadcast.emit('is typing', userId)
-  })
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  })
+app.get('/', (req,res) => {
+  console.log(req.body.userId)
+  goatId = req.body.goatId;
+  userId = req.body.userId
+  res.send({goatId, userId})
 })
+
+if(goatId != null && userId != null){  
+  const nsp = io.of(`/${goatId}/${userId}`)
+  nsp.on('connection', socket => {
+    console.log('New client connected');
+    socket.on('add message', (message, userId, goatId) => {
+      console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
+      nsp.emit('add message', message)
+      db.Message.create({
+        message, 
+        userId, 
+        goatId
+      })
+      .then(() => {
+        console.log('message created in db')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    })
+
+    socket.on('is typing', (userId) => {
+      console.log(userId)
+      socket.broadcast.emit('is typing', userId)
+    })
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    })
+  })
+}
 
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
