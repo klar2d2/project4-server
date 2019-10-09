@@ -91,7 +91,7 @@ router.get('/', (req,res) => {
 
 router.get('/all',(req,res) => {
   db.Appointment.find()
-  .then((appointment) => {
+  .then((appointments) => {
     return res.send({appointments})
   })
 })
