@@ -18,13 +18,31 @@ let userSchema = new mongoose.Schema({
       }
     }
   },
+  isGoat: Boolean,
+  phone: String,
   password: {
     type: String,
     required: true,
     minlength: 8,
     maxlength: 32
   },
-  profileUrl: String
+  profileId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Goat'
+  },
+  reviews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+  appointments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Appointment'
+  }],
+  address: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Address'
+  }
+
 })
 
 userSchema.pre('save', function(next){
