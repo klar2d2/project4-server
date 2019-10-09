@@ -20,7 +20,9 @@ nsp.on('connection', socket => {
     console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
     nsp.emit('add message', message)
     db.Message.create({
-      message: message
+      message, 
+      userId, 
+      goatId
     })
     .then(() => {
       console.log('message created in db')
