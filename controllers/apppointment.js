@@ -89,6 +89,13 @@ router.get('/', (req,res) => {
   }
 })
 
+router.get('/all',(req,res) => {
+  db.Appointment.find()
+  .then((appointment) => {
+    return res.send({appointments})
+  })
+})
+
 // GET one appointment
 router.get('/:appointmentId' ,(req,res) => {
   db.Appointment.findOne({
@@ -103,13 +110,6 @@ router.get('/:appointmentId' ,(req,res) => {
   .catch((err) => {
     console.log(`Error in GET/appointment/${req.params.appointmentId}`, err)
     res.status(503).send({ message: 'Something went wrong.' })
-  })
-})
-
-router.get('/all',(req,res) => {
-  db.Appointment.find()
-  .then((appointment) => {
-    return res.send({appointments})
   })
 })
 
