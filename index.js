@@ -67,7 +67,10 @@ app.use('/auth',
 }), require('./controllers/auth'))
 
 app.use('/message', require('./controllers/message'));
-app.use('/reviews', require('./controllers/reviews'))
+app.use('/reviews', 
+  expressJwt({
+  secret: process.env.JWT_SECRET
+}), require('./controllers/reviews'))
 app.use('/appointment',
   expressJwt({
     secret: process.env.JWT_SECRET
