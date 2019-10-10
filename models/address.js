@@ -5,7 +5,9 @@ let addressSchema = new mongoose.Schema({
   street: String,
   city: String,
   state: String,
-  zipcode: String
+  zipcode: String,
+  longitude: String,
+  latitude: String
 })
 
 module.exports = mongoose.model('Address', addressSchema);
