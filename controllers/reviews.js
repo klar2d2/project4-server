@@ -44,12 +44,14 @@ router.post('/:goatId', (req, res) => {
       _id: review.clientId
     })
     .then((client)=>{
+      console.log(client)
       client.reviews.push(review)
       client.save()
       db.User.findOne({
         _id: review.goatId
       })
       .then((goat)=>{
+        console.log(goat)
         goat.reviews.push(review)
         goat.save()
         res.status(201).send({success: review})
