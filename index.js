@@ -3,47 +3,58 @@ const express = require('express')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 const rowdyLogger = require('rowdy-logger')
-const http = require('http')
 const socketIO = require('socket.io')
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-
 const app = express()
 const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
 const nsp = io.of('/12345')
-
-nsp.on('connection', socket => {
-  console.log('New client connected');
-  
-  socket.on('add message', (message, userId, goatId) => {
-    console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
-    nsp.emit('add message', message)
-    db.Message.create({
-      message: message
-    })
-    .then(() => {
-      console.log('message created in db')
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  })
-
-  socket.on('is typing', (userId) => {
-    console.log(userId)
-    socket.broadcast.emit('is typing', userId)
-  })
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  })
-})
+let recipient = null;
+let currentUser = null;
 
 app.use(cors())
+
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ limit: '10mb' }))
+
+app.post('/chat', (req,res) => {
+
+  recipient = req.body.recipient;
+  currentUser = req.body.currentUser
+  res.send('hey there big face')
+const nspObj = {}
+nspObj[`${recipient}-${currentUser}`] = io.of(`/${recipient}-${currentUser}`)
+nspObj[`${recipient}-${currentUser}`].on('connection', socket => {
+    console.log('New client connected');
+    socket.on('add message', (message, currentUser, recipient, tag) => {
+        console.log('The Message added is: ', message, 'The user is:', currentUser, 'The goat is:', recipient);
+        nspObj[`${recipient}-${currentUser}`].emit('add message', message)
+        db.Message.create({
+          message, 
+          currentUser, 
+          recipient
+        })
+        .then(() => {
+          console.log('message created in db')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      })
+
+      socket.on('is typing', (currentUser) => {
+        console.log(currentUser)
+        socket.broadcast.emit('is typing', currentUser)
+      })
+
+      socket.on('disconnect', () => {
+        console.log('user disconnected');
+      })
+    })
+})
+
 
 app.post('/sms', (req, res) => {
   const twiml = new MessagingResponse();
