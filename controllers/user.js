@@ -24,7 +24,9 @@ router.get('/goats', (req,res) => {
   .then((users) => {
     res.send({users})
   })
-  .catch()
+  .catch((err)=>{
+    console.log(err)
+  })
 })
 
 module.exports = router;
