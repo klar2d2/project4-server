@@ -40,20 +40,16 @@ router.post('/:goatId', (req, res) => {
     rating: req.body.rating
   })
   .then(review => {
-    db.User.findOne({
-      _id: review.clientId
+    db.User.updateOne(
+      {_id: review.clientId},
+      {$push: { reviews: review }
     })
-    .then((client)=>{
-      console.log(client)
-      client.reviews.push(review)
-      client.save()
-      db.User.findOne({
-        _id: review.goatId
+    .then(()=>{
+      db.User.updateOne(
+        {_id: review.goatId},
+        {$push: { reviews: review }
       })
-      .then((goat)=>{
-        console.log(goat)
-        goat.reviews.push(review)
-        goat.save()
+      .then(()=>{
         res.status(201).send({success: review})
       })
       .catch((err)=>{
