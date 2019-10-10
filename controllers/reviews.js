@@ -53,7 +53,7 @@ router.put('/:id', (req, res) => {
     _id: req.params.reviewId
   })
   .then(review => {
-    if (review.clientId === req.user._id) {
+    if (review.clientId === req.user.id) {
       review.title = req.body.title;
       review.content = req.body.content;
       review.rating = req.body.content;
@@ -70,9 +70,11 @@ router.put('/:id', (req, res) => {
 })
 
 router.delete('/:id', (req, res) => {
-  db.User.findOne({_id : req.params.reviewId})
+  console.log(req.params.id, req.user)
+  db.Review.findOne({_id : req.params.id})
   .then(review => {
-    if (reveiw.clientId === req.user.id) {
+    console.log(review)
+    if (review.clientId === req.user.id) {
       db.Review.deleteOne({
         _id: req.params.reviewId
       })

@@ -22,8 +22,8 @@ const client = require('twilio')(accountSid, authToken);
 router.post('/create', (req,res) => {
   db.Appointment.findOne({
     goatId: req.body.goatId,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate
+    goatName: req.body.goatName,
+    date: req.body.date,
   })
   .then((appointment)=>{
     if (appointment){
@@ -51,7 +51,7 @@ router.post('/create', (req,res) => {
 
       client.messages
         .create({
-           body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+           body: 'This Appointment has now been set.',
            from: '+12054489339',
            to: req.user.phone
          })
@@ -141,11 +141,8 @@ router.put('/:appointmentId', (req, res) => {
     if (!req.user.id === appointment.clientId || !req.user.id === appointment.goatId){
       return res.status(403).send({ message: 'You do not have permission for this action.' })
     }
-    if (req.body.startDate) {
-      appointment.startDate = req.body.startDate
-    }
-    if (req.body.endDate) {
-      appointment.endDate = req.body.endDate
+    if (req.body.date) {
+      appointment.date = req.body.date
     }
     if (req.body.location) {
       appointment.location = req.body.location

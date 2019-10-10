@@ -3,8 +3,8 @@ let mongoose = require('mongoose')
 let appointmentSchema = new mongoose.Schema({
   clientId: String,
   goatId: String,
-  startDate: Date,
-  endDate: Date,
+  goatName: String,
+  date: Date,
   location: String,
 });
 

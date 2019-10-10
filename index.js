@@ -39,7 +39,7 @@ app.use('/reviews', require('./controllers/reviews'))
 app.use('/appointment',
   expressJwt({
     secret: process.env.JWT_SECRET
-  }), require('./controllers/apppointment'))
+  }), require('./controllers/appointment'))
 
 app.get('*', (req,res) => {
   res.status(404).send({
