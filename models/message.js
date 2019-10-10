@@ -9,12 +9,9 @@ let messageSchema = new mongoose.Schema({
     message: {
         type: String,
     },
-    date: {
-        type: String,
-    },
-    goat: {
-        type: Object_Id, 
-        ref: 'Goat',
+    goatId: {
+        type: Object_Id,
+        ref: 'Goat'
     }
 })
 
