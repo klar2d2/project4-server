@@ -11,8 +11,8 @@ const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
-let goatId = null;
-let userId = null;
+let recipient = null;
+let currentUser = null;
 
 app.use(cors())
 
@@ -21,20 +21,20 @@ app.use(express.json({ limit: '10mb' }))
 
 app.post('/chat', (req,res) => {
 
-  goatId = req.body.goatId;
-  userId = req.body.userId
+  recipient = req.body.recipient;
+  currentUser = req.body.currentUser
   res.send('hey there big face')
 const nspObj = {}
-nspObj[`${goatId}-${userId}`] = io.of(`/${goatId}-${userId}`)
-nspObj[`${goatId}-${userId}`].on('connection', socket => {
+nspObj[`${recipient}-${currentUser}`] = io.of(`/${recipient}-${currentUser}`)
+nspObj[`${recipient}-${currentUser}`].on('connection', socket => {
     console.log('New client connected');
-    socket.on('add message', (message, userId, goatId) => {
-        console.log('The Message added is: ', message, 'The user is', userId, 'The goat is', goatId);
-        nspObj[`${goatId}-${userId}`].emit('add message', message)
+    socket.on('add message', (message, currentUser, recipient, tag) => {
+        console.log('The Message added is: ', message, 'The user is:', currentUser, 'The goat is:', recipient);
+        nspObj[`${recipient}-${currentUser}`].emit('add message', message)
         db.Message.create({
           message, 
-          userId, 
-          goatId
+          currentUser, 
+          recipient
         })
         .then(() => {
           console.log('message created in db')
@@ -44,9 +44,9 @@ nspObj[`${goatId}-${userId}`].on('connection', socket => {
         })
       })
 
-      socket.on('is typing', (userId) => {
-        console.log(userId)
-        socket.broadcast.emit('is typing', userId)
+      socket.on('is typing', (currentUser) => {
+        console.log(currentUser)
+        socket.broadcast.emit('is typing', currentUser)
       })
 
       socket.on('disconnect', () => {
