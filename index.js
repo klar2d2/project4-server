@@ -7,13 +7,14 @@ const socketIO = require('socket.io')
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 const app = express()
 const rowdyResults = rowdyLogger.begin(app);
+const http = require('http')
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
 const nspObj = {}
 
 app.use(cors())
-
+io.set('origins', 'http://localhost:3000')
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ limit: '10mb' }))
 
@@ -21,7 +22,7 @@ app.post('/chat', (req,res) => {
   goatId = req.body.goatId;
   userId = req.body.userId;
   res.send('hey there big face')
-  const chatId = `${userId}-${currentUser}`
+  const chatId = `${userId}-${goatId}`
   db.User.updateOne(
     {_id: userId},
     {$push: { chats: chatId }}
@@ -94,7 +95,7 @@ app.use('/reviews',
 app.use('/appointment',
   expressJwt({
     secret: process.env.JWT_SECRET
-  }), require('./controllers/apppointment'))
+  }), require('./controllers/appointment'))
 app.use('/user', require('./controllers/user'))
 app.get('*', (req,res) => {
   res.status(404).send({
