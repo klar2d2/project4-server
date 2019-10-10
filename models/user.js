@@ -28,6 +28,7 @@ let userSchema = new mongoose.Schema({
       }
     }
   },
+  chats: [String],
   isGoat: Boolean,
   phone: String,
   password: {

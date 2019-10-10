@@ -10,9 +10,7 @@ const rowdyResults = rowdyLogger.begin(app);
 const server = http.createServer(app);
 const io = socketIO(server);
 const db = require('./models')
-const nsp = io.of('/12345')
-let recipient = null;
-let currentUser = null;
+const nspObj = {}
 
 app.use(cors())
 
@@ -20,39 +18,50 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json({ limit: '10mb' }))
 
 app.post('/chat', (req,res) => {
-
-  recipient = req.body.recipient;
-  currentUser = req.body.currentUser
+  goatId = req.body.goatId;
+  userId = req.body.userId;
   res.send('hey there big face')
-const nspObj = {}
-nspObj[`${recipient}-${currentUser}`] = io.of(`/${recipient}-${currentUser}`)
-nspObj[`${recipient}-${currentUser}`].on('connection', socket => {
-    console.log('New client connected');
-    socket.on('add message', (message, currentUser, recipient, tag) => {
-        console.log('The Message added is: ', message, 'The user is:', currentUser, 'The goat is:', recipient);
-        nspObj[`${recipient}-${currentUser}`].emit('add message', message)
-        db.Message.create({
-          message, 
-          currentUser, 
-          recipient
-        })
-        .then(() => {
-          console.log('message created in db')
-        })
-        .catch(err => {
-          console.log(err)
-        })
-      })
-
-      socket.on('is typing', (currentUser) => {
-        console.log(currentUser)
-        socket.broadcast.emit('is typing', currentUser)
-      })
-
-      socket.on('disconnect', () => {
-        console.log('user disconnected');
+  const chatId = `${userId}-${currentUser}`
+  db.User.updateOne(
+    {_id: userId},
+    {$push: { chats: chatId }}
+  )
+  .then(()=>{
+    db.User.updateOne(
+      {_id: goatId},
+      {$push: { chats: chatId }}
+    )
+    .then(()=>{
+      nspObj[chatId] = io.of(`/${userId}-${goatId}`)
+      nspObj[chatId].on('connection', socket => {
+          console.log('New client connected');
+          socket.on('add message', (message, user, recipient) => {
+            console.log('The Message added is: ', message, 'The user is:', user, 'The goat is:', recipient);
+            nspObj[`${userId}-${goatId}`].emit('add message', message)
+            db.Message.create({
+              message, 
+              goatId, 
+              userId,
+              chatId
+            })
+            .then(() => {
+              console.log('message created in db')
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          })
+          socket.on('is typing', (userId) => {
+            console.log(userId)
+            socket.broadcast.emit('is typing', userId)
+          })
+    
+          socket.on('disconnect', () => {
+            console.log('user disconnected');
+          })
       })
     })
+  })
 })
 
 
