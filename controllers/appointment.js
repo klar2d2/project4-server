@@ -89,6 +89,13 @@ router.get('/', (req,res) => {
   }
 })
 
+router.get('/all',(req,res) => {
+  db.Appointment.find()
+  .then((appointments) => {
+    return res.send({appointments})
+  })
+})
+
 // GET one appointment
 router.get('/:appointmentId' ,(req,res) => {
   db.Appointment.findOne({

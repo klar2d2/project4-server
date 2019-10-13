@@ -1,15 +1,26 @@
 let router = require('express').Router()
 let db = require('../models')
 
+
+router.get('/goats', (req,res) => {
+  db.User.find({
+      isGoat: true
+  })
+  .then((users) => {
+    res.send({users})
+  })
+  .catch((err)=>{
+    console.log(err)
+  })
+})
+
 // GET  profile
 router.get('/:userId', (req,res) => {
   db.User.findOne({
     _id: req.params.id
   })
   .then((user) => {
-    if (user.isGoat) {
-      
-    }
+    res.send({user})
   })
   .catch((err) => {
     console.log(`Error in GET/user/${req.params.id}`, err)

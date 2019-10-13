@@ -1,6 +1,16 @@
 let mongoose = require('mongoose')
 let bcrypt = require('bcryptjs')
 
+let addressSchema = new mongoose.Schema({
+  streetNumber: String,
+  street: String,
+  city: String,
+  state: String,
+  zipcode: String,
+  longitude: String,
+  latitude: String
+})
+
 let userSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -18,6 +28,7 @@ let userSchema = new mongoose.Schema({
       }
     }
   },
+  chats: [String],
   isGoat: Boolean,
   phone: String,
   password: {
@@ -26,10 +37,12 @@ let userSchema = new mongoose.Schema({
     minlength: 8,
     maxlength: 32
   },
+  profilePic: String,
   profileId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Goat'
   },
+  rating: Number,
   reviews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Review'
@@ -38,11 +51,7 @@ let userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Appointment'
   }],
-  address: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Address'
-  }
-
+  address: addressSchema
 })
 
 userSchema.pre('save', function(next){

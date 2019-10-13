@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/:id', (req, res) => {
-  db.User.findOne({_id: req.params.userId})
+router.get('/:goatId', (req, res) => {
+  db.User.findOne({_id: req.params.goatId})
   .then(user => {
     if(user) {
       res.status(201).send({reviews: user.reviews})
@@ -30,17 +30,37 @@ router.get('/:id', (req, res) => {
   })
 })
 
-router.post('/:id', (req, res) => {
+router.post('/:goatId', (req, res) => {
   db.Review.create({
-    goatId: req.body.goatId,
-    //Change to req.user after testing is over
+    goatId: req.params.goatId,
+    //Change to req.user.id after testing is over
     clientId: req.body.clientId,
     title: req.body.title,
     content: req.body.content,
     rating: req.body.rating
   })
   .then(review => {
-    res.status(201).send({success: review})
+    db.User.updateOne(
+      {_id: review.clientId},
+      {$push: { reviews: review }
+    })
+    .then(()=>{
+      db.User.updateOne(
+        {_id: review.goatId},
+        {$push: { reviews: review }
+      })
+      .then(()=>{
+        res.status(201).send({success: review})
+      })
+      .catch((err)=>{
+        console.log('Error in post route', err)
+        res.status(500).send({message: "Failed posting the review"})
+      })
+    })
+    .catch((err)=>{
+      console.log('Error in post route', err)
+      res.status(500).send({message: "Failed posting the review"})
+    })
   })
   .catch(err => {
     console.log("error in the post route", err)
@@ -48,15 +68,16 @@ router.post('/:id', (req, res) => {
   })
 })
 
-router.put('/:id', (req, res) => {
-  db.Reveiw.findOneAndUpdate({
+router.put('/:reviewId', (req, res) => {
+  db.Review.findOne({
     _id: req.params.reviewId
   })
   .then(review => {
-    if (review.clientId === req.user.id) {
+    if (String(review.clientId) === req.user._id) {
       review.title = req.body.title;
       review.content = req.body.content;
-      review.rating = req.body.content;
+      review.rating = req.body.rating;
+      review.save()
       res.send({message: "Review Updated"})
     }
     else {
@@ -69,11 +90,17 @@ router.put('/:id', (req, res) => {
   })
 })
 
+<<<<<<< HEAD
 router.delete('/:id', (req, res) => {
   console.log(req.params.id, req.user)
   db.Review.findOne({_id : req.params.id})
   .then(review => {
     console.log(review)
+=======
+router.delete('/:reviewId', (req, res) => {
+  db.User.findOne({_id : req.params.reviewId})
+  .then(review => {
+>>>>>>> af9705e87335362d81db4723add806bc962f2eed
     if (review.clientId === req.user.id) {
       db.Review.deleteOne({
         _id: req.params.reviewId
