@@ -2,20 +2,21 @@ let mongoose = require('mongoose');
 const Object_Id = mongoose.Schema.Types.ObjectId;
 
 let messageSchema = new mongoose.Schema({
-    user: {
+    sender: {
         type: Object_Id,
         ref: 'User',
-    }, 
+    },
     message: {
         type: String,
     },
     date: {
         type: String,
     },
-    goat: {
-        type: Object_Id, 
-        ref: 'Goat',
-    }
+    reciever: {
+        type: Object_Id,
+        ref: 'User',
+    },
+    chatId: String
 })
 
 

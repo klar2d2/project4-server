@@ -4,7 +4,6 @@ const express = require('express')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 const rowdyLogger = require('rowdy-logger')
-const http = require('http')
 const socketIO = require('socket.io')
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
@@ -72,7 +71,7 @@ app.use('/reviews', require('./controllers/reviews'))
 app.use('/appointment',
   expressJwt({
     secret: process.env.JWT_SECRET
-  }), require('./controllers/apppointment'))
+  }), require('./controllers/appointment'))
 app.use('/user', require('./controllers/user'))
 
 app.get('*', (req,res) => {
