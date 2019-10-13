@@ -32,8 +32,7 @@ router.get('/:goatId', (req, res) => {
 
 router.post('/:goatId', (req, res) => {
   db.Review.create({
-    goatId: req.params.goatId,
-    //Change to req.user.id after testing is over
+    goatId: req.body.goatId,
     clientId: req.body.clientId,
     title: req.body.title,
     content: req.body.content,
@@ -90,17 +89,11 @@ router.put('/:reviewId', (req, res) => {
   })
 })
 
-<<<<<<< HEAD
 router.delete('/:id', (req, res) => {
   console.log(req.params.id, req.user)
   db.Review.findOne({_id : req.params.id})
   .then(review => {
     console.log(review)
-=======
-router.delete('/:reviewId', (req, res) => {
-  db.User.findOne({_id : req.params.reviewId})
-  .then(review => {
->>>>>>> af9705e87335362d81db4723add806bc962f2eed
     if (review.clientId === req.user.id) {
       db.Review.deleteOne({
         _id: req.params.reviewId
